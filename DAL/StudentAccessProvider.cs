@@ -26,7 +26,7 @@ namespace DemoApi.DAL
 
         public void DeleteStudent(Guid id)
         {
-            var _student = _studentContext.Find<Student>(id);
+            var _student = _studentContext.Students.Find(id);
             _studentContext.Students.Remove(_student);
             _studentContext.SaveChanges();
         }

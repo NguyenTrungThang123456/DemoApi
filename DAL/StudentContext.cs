@@ -6,6 +6,10 @@ namespace DemoApi.DAL
 {
     public class StudentContext:DbContext
     {
+        public StudentContext()
+        {
+        }
+
         public StudentContext(DbContextOptions<StudentContext> options) : base(options)
         { 
         }

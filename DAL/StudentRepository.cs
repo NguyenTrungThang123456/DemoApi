@@ -16,11 +16,17 @@ namespace DemoApi.DAL
         private bool disposed = false;
 
         private StudentContext _context;
+        private StudentContext studentContext;
 
         public StudentRepository(IConfiguration configuration, StudentContext context)
         {
             _context = context;
             connectionString = configuration["ConnectionString"];
+        }
+
+        public StudentRepository(StudentContext studentContext)
+        {
+            this.studentContext = studentContext;
         }
 
         public IDbConnection Connection
@@ -34,6 +40,11 @@ namespace DemoApi.DAL
         public void Add(Student student)
         {
             throw new NotImplementedException();
+        }
+
+        public void Save()
+        {
+            _context.SaveChanges();
         }
 
         protected virtual void Dispose(bool disposing)

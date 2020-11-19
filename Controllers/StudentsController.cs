@@ -20,10 +20,10 @@ namespace DemoApi.Controllers
             _studentRepository = new StudentRepository(new StudentContext());
         }
 
-        public StudentsController(StudentAccessProvider studentAccessProvider, IConfiguration configuration)
+        public StudentsController(StudentAccessProvider studentAccessProvider, StudentRepository studentRepository)
         {
             _studentAccessProvider = studentAccessProvider;
-            _studentRepository = new StudentRepository(configuration);
+            _studentRepository = studentRepository;
         }
 
         [HttpPost]
