@@ -77,41 +77,66 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using DemoApi.Features.StudentFeatures.Commands;
 using System;
-  [Route("api/[controller]")]
+using DemoApi.Interface;
+using DemoApi.Models;
+
+[Route("api/[controller]")]
 [ApiController]
 public class StudentController : ControllerBase
 {
-    private IMediator _mediator;
+    //private IMediator _mediator;
 
-    protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
+    //protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
+
+    //[HttpPost]
+    //public async Task<IActionResult> Create(CreateStudentCommand command)
+    //{
+    //    return Ok(await Mediator.Send(command));
+    //}
+    //[HttpGet]
+    //public async Task<IActionResult> GetAll()
+    //{
+    //    return Ok(await Mediator.Send(new GetAllStudentsQuery()));
+    //}
+    //[HttpGet("{id}")]
+    //public async Task<IActionResult> GetById(Guid id)
+    //{
+    //    return Ok(await Mediator.Send(new GetStudentByIdQuery { Id = id }));
+    //}
+    //[HttpDelete("{id}")]
+    //public async Task<IActionResult> Delete(Guid id)
+    //{
+    //    return Ok(await Mediator.Send(new DeleteStudentByIdCommand { Id = id }));
+    //}
+    //[HttpPut("{id}")]
+    //public async Task<IActionResult> Update(Guid id, UpdateStudentCommand command)
+    //{
+    //    if (id != command.Id)
+    //    {
+    //        return BadRequest();
+    //    }
+    //    return Ok(await Mediator.Send(command));
+    //}
+
+    private readonly IUnitOfWork _unitOfWork;
+
+    public StudentController(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
+
+    [HttpGet]
+    public IActionResult GetStudent()
+    {
+        var students = _unitOfWork.Students.GetStudent();
+        return Ok(students);
+    }
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateStudentCommand command)
+    public IActionResult AddStudent(Student student)
     {
-        return Ok(await Mediator.Send(command));
-    }
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
-    {
-        return Ok(await Mediator.Send(new GetAllStudentsQuery()));
-    }
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id)
-    {
-        return Ok(await Mediator.Send(new GetStudentByIdQuery { Id = id }));
-    }
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id)
-    {
-        return Ok(await Mediator.Send(new DeleteStudentByIdCommand { Id = id }));
-    }
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, UpdateStudentCommand command)
-    {
-        if (id != command.Id)
-        {
-            return BadRequest();
-        }
-        return Ok(await Mediator.Send(command));
+        _unitOfWork.Students.Add(student);
+        _unitOfWork.Complete();
+        return Ok(student.Id);
     }
 }

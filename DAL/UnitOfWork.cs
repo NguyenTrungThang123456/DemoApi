@@ -1,49 +1,29 @@
 ﻿using System;
+using DemoApi.Interface;
 using DemoApi.Models;
 
 namespace DemoApi.DAL
 {
-    public class UnitOfWork : IDisposable
+    public class UnitOfWork : IUnitOfWork
     {
-        private StudentContext context = new StudentContext();
-        private GenericRepository<Student> studentRepository;
+        private readonly StudentContext _context;
 
-        public GenericRepository<Student> StudentRepository
+        public UnitOfWork(StudentContext context)
         {
-            get
-            {
-
-                if (this.studentRepository == null)
-                {
-                    this.studentRepository = new GenericRepository<Student>(context);
-                }
-                return studentRepository;
-            }
+            _context = context;
+            Students = new StudentRepository(_context);
         }
 
-        public void Save()
-        {
-            context.SaveChanges();
-        }
+        public IStudentRepository Students { get; private set; }
 
-        private bool disposed = false;
-
-        protected virtual void Dispose(bool disposing)
+        public int Complete()
         {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    context.Dispose();
-                }
-            }
-            this.disposed = true;
+            return _context.SaveChanges();
         }
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            _context.Dispose();
         }
     }
 }

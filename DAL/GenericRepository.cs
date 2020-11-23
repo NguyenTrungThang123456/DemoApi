@@ -5,77 +5,52 @@ using System.Data;
 using DemoApi.Models;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using DemoApi.Interface;
 
 namespace DemoApi.DAL
 {
-    public class GenericRepository<TEntity> where TEntity : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        internal StudentContext context;
-        internal DbSet<TEntity> dbSet;
+        protected readonly StudentContext _context;
 
         public GenericRepository(StudentContext context)
         {
-            this.context = context;
-            this.dbSet = context.Set<TEntity>();
+            _context = context;
         }
 
-        public virtual IEnumerable<TEntity> Get(
-            Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            string includeProperties = "")
+        public void Add(T entity)
         {
-            IQueryable<TEntity> query = dbSet;
-
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-            foreach (var includeProperty in includeProperties.Split
-                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                query = query.Include(includeProperty);
-            }
-
-            if (orderBy != null)
-            {
-                return orderBy(query).ToList();
-            }
-            else
-            {
-                return query.ToList();
-            }
+            _context.Set<T>().Add(entity);
         }
 
-        public virtual TEntity GetByID(object id)
+        public void AddRange(IEnumerable<T> entities)
         {
-            return dbSet.Find(id);
+            _context.Set<T>().AddRange(entities);
         }
 
-        public virtual void Insert(TEntity entity)
+        public IEnumerable<T> Find(Expression<Func<T, bool>> expression)
         {
-            dbSet.Add(entity);
+            return _context.Set<T>().Where(expression);
         }
 
-        public virtual void Delete(object id)
+        public IEnumerable<T> GetAll()
         {
-            TEntity entityToDelete = dbSet.Find(id);
-            Delete(entityToDelete);
+            return _context.Set<T>().ToList();
         }
 
-        public virtual void Delete(TEntity entityToDelete)
+        public T GetById(Guid id)
         {
-            if (context.Entry(entityToDelete).State == EntityState.Detached)
-            {
-                dbSet.Attach(entityToDelete);
-            }
-            dbSet.Remove(entityToDelete);
+            return _context.Set<T>().Find(id);
         }
 
-        public virtual void Update(TEntity entityToUpdate)
+        public void Remove(T entity)
         {
-            dbSet.Attach(entityToUpdate);
-            context.Entry(entityToUpdate).State = EntityState.Modified;
+            _context.Set<T>().Remove(entity);
+        }
+
+        public void RemoveRange(IEnumerable<T> entities)
+        {
+            _context.Set<T>().RemoveRange(entities);
         }
     }
 }

@@ -11,29 +11,28 @@ namespace DemoApi.Features.StudentFeatures.Commands
         public string Name { get; set; }
    
         public string Address { get; set; }
+    }
+    public class CreateProductCommandHandler : IRequestHandler<CreateStudentCommand, Guid>
+    {
+        private readonly StudentContext _context;
 
-        public class CreateProductCommandHandler : IRequestHandler<CreateStudentCommand, Guid>
+        public CreateProductCommandHandler(StudentContext context)
         {
-            private readonly StudentContext _context;
+            _context = context;
+        }
 
-            public CreateProductCommandHandler(StudentContext context)
-            {
-                _context = context;
-            }
+        public async Task<Guid> Handle(CreateStudentCommand command, CancellationToken cancellationToken)
+        {
+            var student = new Student();
 
-            public async Task<Guid> Handle(CreateStudentCommand command, CancellationToken cancellationToken)
-            {
-                var student = new Student();
-
-                student.Name = command.Name;
-                student.Address = command.Address;
+            student.Name = command.Name;
+            student.Address = command.Address;
 
 
-                _context.Students.Add(student);
-                await _context.SaveChangesAsync();
+            _context.Students.Add(student);
+            await _context.SaveChangesAsync();
 
-                return student.Id;
-            }
+            return student.Id;
         }
     }
 }
