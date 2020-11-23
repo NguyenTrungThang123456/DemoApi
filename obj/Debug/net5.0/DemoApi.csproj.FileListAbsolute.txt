@@ -42,3 +42,5 @@
 /Users/admin/Projects/DemoApi/DemoApi/obj/Debug/net5.0/DemoApi.pdb
 /Users/admin/Projects/DemoApi/DemoApi/obj/Debug/net5.0/DemoApi.genruntimeconfig.cache
 /Users/admin/Projects/DemoApi/DemoApi/bin/Debug/net5.0/Dapper.dll
+/Users/admin/Projects/DemoApi/DemoApi/bin/Debug/net5.0/MediatR.dll
+/Users/admin/Projects/DemoApi/DemoApi/bin/Debug/net5.0/MediatR.Extensions.Microsoft.DependencyInjection.dll

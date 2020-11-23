@@ -16,7 +16,6 @@ namespace DemoApi.DAL
         private bool disposed = false;
 
         private StudentContext _context;
-        private StudentContext studentContext;
 
         public StudentRepository(IConfiguration configuration, StudentContext context)
         {
@@ -24,11 +23,7 @@ namespace DemoApi.DAL
             connectionString = configuration["ConnectionString"];
         }
 
-        public StudentRepository(StudentContext studentContext)
-        {
-            this.studentContext = studentContext;
-        }
-
+       
         public IDbConnection Connection
         {
             get
